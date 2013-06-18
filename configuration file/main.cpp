@@ -46,7 +46,7 @@ int main(int argc, const char * argv[])
     cout << endl;
     
     // direct access for using in other classes:
-//    cout << "direct access: " << configurator::options["debug"]["bool"]["print model"].value << endl;
+    cout << "direct access: " << configurator::options["debug"]["bool"]["print model"].value << endl;
     
     return 0;
 }
