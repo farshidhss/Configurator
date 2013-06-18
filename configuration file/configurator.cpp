@@ -9,8 +9,8 @@
 #include "configurator.h"
 
 map<string, set<string> > configurator::confHierarchy;
-map<string, map<string, string> > configurator::confDataTypes;
-map<string, map<string, map<string, confVal> > > configurator::options;
+//map<string, map<string, string> > configurator::confDataTypes;
+map<string, map<string, confVal> > configurator::options;
 
 
 configurator::configurator(){}
@@ -109,7 +109,7 @@ vector<string> configurator::split(const string &s, char delim) {
     split(s, delim, elems); return elems;
 }
 
-void configurator::writeConfigurations(string confFilename) {
+void configurator::writeConfigurations(string confFilename, char delim) {
     ofstream outputfile(confFilename.c_str(), ofstream::trunc);
     
     map<string, set<string> >::iterator map_iterator;
@@ -126,10 +126,13 @@ void configurator::writeConfigurations(string confFilename) {
         outputfile << "# " << class_name << " :" << endl;
         
         for (set_iterator = current_class.begin(); set_iterator != current_class.end() ; ++set_iterator) {
-            data_type = confDataTypes[class_name][*set_iterator];
+//            data_type = confDataTypes[class_name][*set_iterator];
+            data_type = options[class_name][parameter].dataType;
             parameter = *set_iterator;
-            value = options[class_name][data_type][parameter].value;
-            outputfile << class_name << "\t" << data_type << "\t" << parameter << "\t=\t" << value << endl;
+            value = options[class_name][parameter].value;
+            outputfile  << class_name << delim
+                        << data_type << delim
+                        << parameter << delim << "=" << delim << value << endl;
         }
         outputfile << endl;
     }
@@ -139,10 +142,10 @@ void configurator::writeConfigurations(string confFilename) {
 }
 
 void configurator::addConfiguration(string confClass, string dataType, string parameter, string value){
-    options[confClass][dataType][parameter].value = value;
-    options[confClass][dataType][parameter].dataType = dataType ;
+    options[confClass][parameter].value = value;
+    options[confClass][parameter].dataType = dataType ;
     confHierarchy[confClass].insert(parameter);
-    confDataTypes[confClass][parameter] = dataType;
+//    confDataTypes[confClass][parameter] = dataType;
 }
 
 void configurator::prettyPrint(){
@@ -158,9 +161,10 @@ void configurator::prettyPrint(){
         current_class = map_iterator->second;
         cout << map_iterator->first << " :" << endl;
         for (set_iterator = current_class.begin(); set_iterator != current_class.end() ; ++set_iterator) {
-            data_type = confDataTypes[map_iterator->first][*set_iterator];
+//            data_type = confDataTypes[map_iterator->first][*set_iterator];
             parameter = *set_iterator;
-            value = options[class_name][data_type][parameter].value;
+            data_type = options[class_name][parameter].dataType;
+            value = options[class_name][parameter].value;
             cout << "\t" << data_type << "\t" << parameter << " = " << value << endl;
         }
     }

@@ -32,18 +32,19 @@ class configurator {
     
 private:
     static map<string, set<string> > confHierarchy;
-    static map<string, map<string, string> > confDataTypes;
+//    static map<string, map<string, string> > confDataTypes;
     
     vector<string> &split(const string &s, char delim, vector<string> &elems);
     vector<string> split(const string &s, char delim);
     
     
 public:
-    static map<string, map<string, map<string, confVal> > > options;
+//    static map<string, map<string, map<string, confVal> > > options;
+    static map<string, map<string, confVal> > options;
     configurator();
     void readConfigurations(string confFilename, char delim);
     void readDefaultConfigurations(string confFilename, char delim);
-    void writeConfigurations(string confFilename);
+    void writeConfigurations(string confFilename, char delim);
     void addConfiguration(string confClass, string dataType, string parameter, string value);
     void prettyPrint();
     
