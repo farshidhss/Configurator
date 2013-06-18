@@ -9,7 +9,6 @@
 #include "configurator.h"
 
 map<string, set<string> > configurator::confHierarchy;
-//map<string, map<string, string> > configurator::confDataTypes;
 map<string, map<string, confVal> > configurator::options;
 
 
@@ -118,7 +117,6 @@ void configurator::writeConfigurations(string confFilename, char delim) {
     set<string> current_class;
     string class_name, data_type, parameter, value;
     
-    //    outputfile << "# This is the default configuration file: " << endl;
     for (map_iterator = confHierarchy.begin(); map_iterator!=confHierarchy.end(); ++map_iterator) {
         class_name = map_iterator->first;
         current_class = map_iterator->second;
@@ -126,7 +124,6 @@ void configurator::writeConfigurations(string confFilename, char delim) {
         outputfile << "# " << class_name << " :" << endl;
         
         for (set_iterator = current_class.begin(); set_iterator != current_class.end() ; ++set_iterator) {
-//            data_type = confDataTypes[class_name][*set_iterator];
             data_type = options[class_name][parameter].dataType;
             parameter = *set_iterator;
             value = options[class_name][parameter].value;
@@ -145,7 +142,6 @@ void configurator::addConfiguration(string confClass, string dataType, string pa
     options[confClass][parameter].value = value;
     options[confClass][parameter].dataType = dataType ;
     confHierarchy[confClass].insert(parameter);
-//    confDataTypes[confClass][parameter] = dataType;
 }
 
 void configurator::prettyPrint(){
@@ -161,7 +157,6 @@ void configurator::prettyPrint(){
         current_class = map_iterator->second;
         cout << map_iterator->first << " :" << endl;
         for (set_iterator = current_class.begin(); set_iterator != current_class.end() ; ++set_iterator) {
-//            data_type = confDataTypes[map_iterator->first][*set_iterator];
             parameter = *set_iterator;
             data_type = options[class_name][parameter].dataType;
             value = options[class_name][parameter].value;
