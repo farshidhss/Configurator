@@ -124,8 +124,8 @@ void configurator::writeConfigurations(string confFilename, char delim) {
         outputfile << "# " << class_name << " :" << endl;
         
         for (set_iterator = current_class.begin(); set_iterator != current_class.end() ; ++set_iterator) {
-            data_type = options[class_name][parameter].dataType;
             parameter = *set_iterator;
+            data_type = options[class_name][parameter].dataType;
             value = options[class_name][parameter].value;
             outputfile  << class_name << delim
                         << data_type << delim
