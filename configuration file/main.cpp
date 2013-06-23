@@ -46,7 +46,17 @@ int main(int argc, const char * argv[])
     cout << endl;
     
     // direct access for using in other classes:
-    cout << "direct access: " << configurator::options["debug"]["print model"].value << endl;
+    string s_arg = configurator::getValue("arguments", "threads");
+    cout << "string returned: " << s_arg << endl;
+    
+    int int_arg = configurator::getValue("arguments", "threads");
+    cout << "string returned: " << int_arg << endl;
+    
+//    bool b_arg = configurator::getValue("arguments","threads"); // This shoud throw exception!!
+//    cout << "bool returned: " << b_arg << endl;
+    
+    // another way of calling it without using an assignment:
+    cout << "original value returned: " << (int)configurator::getValue("arguments", "threads") << endl;
     
     return 0;
 }

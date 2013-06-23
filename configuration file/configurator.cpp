@@ -16,7 +16,7 @@ configurator::configurator(){}
 
 void configurator::readConfigurations(string confFilename, char delim) {
     string currentLine;
-    string class_name, data_type, parameter, value, equal;
+    string class_name, parameter, value, equal;
     vector<string> tokens;
     
 	ifstream inputFile;
@@ -41,14 +41,13 @@ void configurator::readConfigurations(string confFilename, char delim) {
         tokens = split(currentLine, delim, tokens);
         
         class_name  = tokens[0];
-        data_type   = tokens[1];
-        parameter   = tokens[2];
-        equal       = tokens[3];
-        value       = tokens[4];
+        parameter   = tokens[1];
+        equal       = tokens[2];
+        value       = tokens[3];
         
         if (confHierarchy.find(class_name)!=confHierarchy.end() &&
             confHierarchy[class_name].find(parameter)!=confHierarchy[class_name].end()) {
-            addConfiguration(class_name, data_type, parameter, value);
+            addConfiguration(class_name, parameter, value);
         }
     }
     
@@ -57,7 +56,7 @@ void configurator::readConfigurations(string confFilename, char delim) {
 
 void configurator::readDefaultConfigurations(string confFilename, char delim) {
     string currentLine;
-    string class_name, data_type, parameter, value, equal;
+    string class_name, parameter, value, equal;
     vector<string> tokens;
     
 	ifstream inputFile;
@@ -82,12 +81,11 @@ void configurator::readDefaultConfigurations(string confFilename, char delim) {
         tokens = split(currentLine, delim, tokens);
         
         class_name  = tokens[0];
-        data_type   = tokens[1];
-        parameter   = tokens[2];
-        equal       = tokens[3];
-        value       = tokens[4];
+        parameter   = tokens[1];
+        equal       = tokens[2];
+        value       = tokens[3];
     
-        addConfiguration(class_name, data_type, parameter, value);
+        addConfiguration(class_name, parameter, value);
     }
     
 	inputFile.close();
@@ -115,7 +113,7 @@ void configurator::writeConfigurations(string confFilename, char delim) {
     set<string>::iterator set_iterator;
     
     set<string> current_class;
-    string class_name, data_type, parameter, value;
+    string class_name, parameter, value;
     
     for (map_iterator = confHierarchy.begin(); map_iterator!=confHierarchy.end(); ++map_iterator) {
         class_name = map_iterator->first;
@@ -125,10 +123,8 @@ void configurator::writeConfigurations(string confFilename, char delim) {
         
         for (set_iterator = current_class.begin(); set_iterator != current_class.end() ; ++set_iterator) {
             parameter = *set_iterator;
-            data_type = options[class_name][parameter].dataType;
             value = options[class_name][parameter].value;
             outputfile  << class_name << delim
-                        << data_type << delim
                         << parameter << delim << "=" << delim << value << endl;
         }
         outputfile << endl;
@@ -138,9 +134,8 @@ void configurator::writeConfigurations(string confFilename, char delim) {
     
 }
 
-void configurator::addConfiguration(string confClass, string dataType, string parameter, string value){
+void configurator::addConfiguration(string confClass, string parameter, string value){
     options[confClass][parameter].value = value;
-    options[confClass][parameter].dataType = dataType ;
     confHierarchy[confClass].insert(parameter);
 }
 
@@ -149,7 +144,7 @@ void configurator::prettyPrint(){
     set<string>::iterator set_iterator;
     
     set<string> current_class;
-    string class_name, data_type, parameter, value;
+    string class_name, parameter, value;
     
     cout << "Printing hierarchy: " << endl;
     for (map_iterator = confHierarchy.begin(); map_iterator!=confHierarchy.end(); ++map_iterator) {
@@ -158,11 +153,22 @@ void configurator::prettyPrint(){
         cout << map_iterator->first << " :" << endl;
         for (set_iterator = current_class.begin(); set_iterator != current_class.end() ; ++set_iterator) {
             parameter = *set_iterator;
-            data_type = options[class_name][parameter].dataType;
             value = options[class_name][parameter].value;
-            cout << "\t" << data_type << "\t" << parameter << " = " << value << endl;
+            cout << "\t" << parameter << " = " << value << endl;
         }
     }
     cout << "end pretty print!" << endl;
     
+}
+
+void configurator::setValue(const string confClass, const string parameter, const string value){
+    assert(confHierarchy.find(confClass)!=confHierarchy.end() &&
+           confHierarchy[confClass].find(parameter)!=confHierarchy[confClass].end());
+    options[confClass][parameter].value = value;
+}
+
+configurator::Value configurator::getValue(const string confClass, const string parameter){
+    assert(confHierarchy.find(confClass)!=confHierarchy.end() &&
+           confHierarchy[confClass].find(parameter)!=confHierarchy[confClass].end());
+    return { options[confClass][parameter].value };
 }

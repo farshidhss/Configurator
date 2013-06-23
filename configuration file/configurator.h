@@ -17,18 +17,32 @@
 #include <vector>
 #include <map>
 #include <set>
+#include <assert.h>
 
 using namespace std;
 
 struct confVal {
     string value;
-    string dataType;
+    
     int getInt(){return atoi(value.c_str());}
     double getDouble(){return atof(value.c_str());}
-    bool getBool(){return value=="true";}
+    bool getBool(){return value=="1";}
 };
 
 class configurator {
+    
+    struct Value {
+        string value;
+        
+        template<typename T>
+        operator T() const 
+        {
+            std::stringstream ss(value);
+            T convertedValue;
+            if ( ss >> convertedValue ) return convertedValue;
+            else throw std::runtime_error("conversion failed");
+        }
+    };
     
 private:
     static map<string, set<string> > confHierarchy;
@@ -43,8 +57,10 @@ public:
     void readConfigurations(string confFilename, char delim);
     void readDefaultConfigurations(string confFilename, char delim);
     void writeConfigurations(string confFilename, char delim);
-    void addConfiguration(string confClass, string dataType, string parameter, string value);
+    void addConfiguration(string confClass, string parameter, string value);
     void prettyPrint();
+    static void setValue(const string confClass, const string parameter, const string value);
+    static Value getValue(const string confClass, const string parameter) ;
     
 };
 
